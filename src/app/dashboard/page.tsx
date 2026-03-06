@@ -1,25 +1,15 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import Navbar from "@/components/layout/navbar";
 
 export default function DashboardPage() {
-  const router = useRouter();
-
-  const logout = async () => {
-    await fetch("/api/logout", { method: "POST" });
-    router.push("/login");
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-      <h1 className="text-3xl font-bold">Welcome to Dashboard 🎉</h1>
+    <div className="min-h-screen bg-muted/40">
+      <Navbar />
 
-      <button
-        onClick={logout}
-        className="px-4 py-2 text-white bg-red-500 rounded"
-      >
-        Logout
-      </button>
+      <div className="max-w-7xl mx-auto p-6">
+        <h1 className="text-center text-3xl font-bold mb-4">
+          Welcome to Dashboard
+        </h1>
+      </div>
     </div>
   );
 }

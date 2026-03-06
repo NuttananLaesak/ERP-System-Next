@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
-import { loginSchema, LoginInput } from "@/schemas/auth.schema";
+import { registerSchema, RegisterInput } from "@/schemas/auth.schema";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,20 +17,20 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 import { toast } from "sonner";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async (data: LoginInput) => {
-    const promise = fetch("/api/login", {
+  const onSubmit = async (data: RegisterInput) => {
+    const promise = fetch("/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,14 +41,16 @@ export default function LoginPage() {
 
       if (!res.ok) throw new Error(result.message);
 
+      form.reset();
+
       return result;
     });
 
     toast.promise(promise, {
-      loading: "Logging in...",
+      loading: "Creating account...",
       success: () => {
-        router.push("/dashboard");
-        return "Login successful";
+        router.push("/login");
+        return "Account created";
       },
       error: (err) => err.message,
     });
@@ -56,18 +58,36 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-background to-muted px-4">
-      <Card className="w-full max-w-sm">
+      <Card
+        className="w-full max-w-sm  animate-in fade-in zoom-in-95 slide-in-from-bottom-6
+        duration-500
+        hover:shadow-xl
+        transition
+        "
+      >
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">
-            Login
+            Register
           </CardTitle>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Name */}
+            <div className="relative">
+              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+
+              <Input
+                placeholder="Name"
+                className="pl-10"
+                {...form.register("name")}
+              />
+            </div>
+
             {/* Email */}
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+
               <Input
                 type="email"
                 placeholder="Email"
@@ -96,16 +116,16 @@ export default function LoginPage() {
               </button>
             </div>
 
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full active:scale-95">
+              Register
             </Button>
           </form>
         </CardContent>
 
         <CardFooter className="flex justify-center text-sm text-muted-foreground">
-          Don’t have an account?
-          <a href="/register" className="ml-1 text-primary hover:underline">
-            Register
+          Already have an account?
+          <a href="/login" className="ml-1 text-primary hover:underline">
+            Login
           </a>
         </CardFooter>
       </Card>

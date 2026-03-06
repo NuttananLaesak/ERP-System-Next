@@ -1,3 +1,4 @@
+// npx prisma migrate dev --name
 generator client {
     provider   = "prisma-client-js"
     engineType = "binary"
