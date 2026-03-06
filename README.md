@@ -1,6 +1,6 @@
-## Next.js Fullstack Auth Example
+# Next.js Fullstack Auth Example
 
-# Installation
+## Installation
 
 Clone the repository
 
@@ -16,7 +16,7 @@ npm install
 
 ---
 
-# Environment Variables
+## Environment Variables
 
 Copy .env
 
@@ -24,7 +24,7 @@ Copy .env
 cp .env.example .env
 ```
 
-# Prisma Setup
+## Prisma Setup
 
 Run Prisma migration
 
