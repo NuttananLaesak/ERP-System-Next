@@ -1,13 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { registerSchema } from "@/schemas/auth.schema";
 
 export async function POST(req: Request) {
   const body = await req.json();
+  const data = registerSchema.parse(body);
 
   const existingUser = await prisma.user.findUnique({
     where: {
-      email: body.email,
+      email: data.email,
     },
   });
 
@@ -20,9 +22,9 @@ export async function POST(req: Request) {
 
   const user = await prisma.user.create({
     data: {
-      name: body.name,
-      email: body.email,
-      password: await bcrypt.hash(body.password, 10),
+      name: data.name,
+      email: data.email,
+      password: await bcrypt.hash(data.password, 10),
     },
   });
 

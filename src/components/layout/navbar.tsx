@@ -14,13 +14,14 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { logout } from "@/services/auth.service";
 
 export default function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const logout = async () => {
-    await fetch("/api/logout", { method: "POST" });
+  const handlelogout = async () => {
+    await logout();
     router.push("/login");
   };
 
@@ -60,7 +61,7 @@ export default function Navbar() {
             <Button
               variant="destructive"
               size="sm"
-              onClick={logout}
+              onClick={handlelogout}
               className="flex items-center gap-1"
             >
               <LogOut size={16} />
@@ -125,7 +126,7 @@ export default function Navbar() {
           <Button
             variant="destructive"
             className="mt-4 flex items-center gap-2"
-            onClick={logout}
+            onClick={handlelogout}
           >
             <LogOut size={18} />
             Logout

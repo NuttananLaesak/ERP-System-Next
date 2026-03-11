@@ -20,6 +20,8 @@ import {
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 import { toast } from "sonner";
+import Link from "next/link";
+import { register } from "@/services/auth.service";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -30,21 +32,7 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterInput) => {
-    const promise = fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).then(async (res) => {
-      const result = await res.json();
-
-      if (!res.ok) throw new Error(result.message);
-
-      form.reset();
-
-      return result;
-    });
+    const promise = register(data);
 
     toast.promise(promise, {
       loading: "Creating account...",
@@ -112,7 +100,7 @@ export default function RegisterPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2.5 text-muted-foreground"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
             </div>
 
@@ -124,9 +112,9 @@ export default function RegisterPage() {
 
         <CardFooter className="flex justify-center text-sm text-muted-foreground">
           Already have an account?
-          <a href="/login" className="ml-1 text-primary hover:underline">
+          <Link href="/login" className="ml-1 text-primary hover:underline">
             Login
-          </a>
+          </Link>
         </CardFooter>
       </Card>
     </div>

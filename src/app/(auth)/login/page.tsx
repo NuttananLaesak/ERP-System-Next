@@ -20,6 +20,8 @@ import {
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 import { toast } from "sonner";
+import Link from "next/link";
+import { login } from "@/services/auth.service";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,19 +32,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginInput) => {
-    const promise = fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }).then(async (res) => {
-      const result = await res.json();
-
-      if (!res.ok) throw new Error(result.message);
-
-      return result;
-    });
+    const promise = login(data);
 
     toast.promise(promise, {
       loading: "Logging in...",
@@ -98,7 +88,7 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2.5 text-muted-foreground"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
             </div>
 
@@ -110,9 +100,9 @@ export default function LoginPage() {
 
         <CardFooter className="flex justify-center text-sm text-muted-foreground">
           Don’t have an account?
-          <a href="/register" className="ml-1 text-primary hover:underline">
+          <Link href="/register" className="ml-1 text-primary hover:underline">
             Register
-          </a>
+          </Link>
         </CardFooter>
       </Card>
     </div>
