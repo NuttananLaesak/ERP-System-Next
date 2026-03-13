@@ -36,8 +36,12 @@ export default function LoginPage() {
 
     toast.promise(promise, {
       loading: "Logging in...",
-      success: () => {
-        router.push("/dashboard");
+      success: (data) => {
+        if (data.user.role === "Admin") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/dashboard");
+        }
         return "Login successful";
       },
       error: (err) => err.message,

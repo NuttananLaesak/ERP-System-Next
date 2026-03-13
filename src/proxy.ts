@@ -15,14 +15,28 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (token && isPublic) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
   if (token) {
     try {
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-      await jwtVerify(token, secret);
+      const { payload } = await jwtVerify(token, secret);
+      const role = payload.role as string;
+
+      if (!pathname.startsWith("/admin") && role === "Admin") {
+        return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      }
+
+      if (pathname.startsWith("/admin") && role !== "Admin") {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+
+      if (isPublic) {
+        if (role === "Admin") {
+          return NextResponse.redirect(
+            new URL("/admin/dashboard", request.url),
+          );
+        }
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
     } catch {
       const response = NextResponse.redirect(new URL("/login", request.url));
       response.cookies.delete("token");

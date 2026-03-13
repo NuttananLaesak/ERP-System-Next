@@ -3,14 +3,23 @@ export async function apiFetch(url: string, options?: RequestInit) {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...(options?.headers || {}),
     },
     ...options,
   });
 
-  const data = await res.json();
+  const text = await res.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = text;
+  }
 
   if (!res.ok) {
-    throw new Error(data.message);
+    throw new Error(data?.message || "API Error");
   }
 
   return data;

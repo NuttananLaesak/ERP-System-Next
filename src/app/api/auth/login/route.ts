@@ -22,12 +22,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Invalid password" }, { status: 401 });
   }
 
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-    expiresIn: "7d",
-  });
+  const token = jwt.sign(
+    {
+      userId: user.id,
+      role: user.role,
+    },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: "1d",
+    },
+  );
 
   const response = NextResponse.json({
     message: "Login success",
+    user: {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    },
   });
 
   response.cookies.set("token", token, {

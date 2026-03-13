@@ -1,4 +1,4 @@
-import Navbar from "@/components/layout/navbar";
+import Navbar from "@/app/(admin)/admin/components/layout/navbar";
 
 export default function DashboardPage() {
   return (
@@ -7,7 +7,7 @@ export default function DashboardPage() {
 
       <div className="max-w-7xl mx-auto p-6">
         <h1 className="text-center text-3xl font-bold mb-4">
-          Welcome to Dashboard
+          Welcome to Admin Dashboard
         </h1>
       </div>
     </div>

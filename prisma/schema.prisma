@@ -1,4 +1,4 @@
-// npx prisma migrate dev --name 
+// npx prisma migrate dev --name init
 generator client {
     provider   = "prisma-client-js"
     engineType = "binary"
@@ -10,9 +10,79 @@ datasource db {
 }
 
 model User {
+    id          Int          @id @default(autoincrement())
+    name        String
+    email       String       @unique
+    password    String
+    role        Role         @default(Employee)
+    createdAt   DateTime     @default(now())
+    tasks       Task[]
+    attendances Attendance[]
+    leaves      Leave[]
+    payrolls    Payroll[]
+}
+
+enum Role {
+    Admin
+    Manager
+    Employee
+}
+
+model Task {
+    id        Int        @id @default(autoincrement())
+    title     String
+    status    TaskStatus @default(TODO)
+    dueDate   DateTime?
+    userId    Int
+    createdAt DateTime   @default(now())
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+enum TaskStatus {
+    TODO
+    IN_PROGRESS
+    DONE
+}
+
+model Attendance {
+    id        Int       @id @default(autoincrement())
+    userId    Int
+    checkIn   DateTime?
+    checkOut  DateTime?
+    date      DateTime
+    createdAt DateTime  @default(now())
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+model Leave {
+    id        Int         @id @default(autoincrement())
+    userId    Int
+    reason    String
+    status    LeaveStatus @default(PENDING)
+    startDate DateTime
+    endDate   DateTime
+    createdAt DateTime    @default(now())
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+enum LeaveStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+model Payroll {
     id        Int      @id @default(autoincrement())
-    name      String
-    email     String   @unique
-    password  String
+    userId    Int
+    month     String
+    salary    Float
+    bonus     Float
+    tax       Float
+    netSalary Float
     createdAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id])
 }

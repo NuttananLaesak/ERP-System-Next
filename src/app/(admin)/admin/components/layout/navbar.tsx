@@ -30,12 +30,12 @@ export default function Navbar() {
       <nav className="border-b bg-background">
         <div className="flex h-16 items-center justify-between px-6 max-w-7xl mx-auto">
           {/* Logo */}
-          <div className="font-bold text-2xl">MyApp</div>
+          <div className="font-bold text-2xl">Admin Panel</div>
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center gap-6 text-sm">
             <Link
-              href="/dashboard"
+              href="/admin/dashboard"
               className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
             >
               <LayoutDashboard size={16} />
@@ -43,7 +43,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/users"
+              href="/admin/users"
               className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
             >
               <Users size={16} />
@@ -51,7 +51,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/settings"
+              href="/admin/settings"
               className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
             >
               <Settings size={16} />
