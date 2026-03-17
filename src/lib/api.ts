@@ -19,7 +19,15 @@ export async function apiFetch(url: string, options?: RequestInit) {
   }
 
   if (!res.ok) {
-    throw new Error(data?.message || "API Error");
+    const message = data?.message || "Something went wrong";
+
+    window.dispatchEvent(
+      new CustomEvent("api-error", {
+        detail: { message, status: res.status },
+      }),
+    );
+
+    throw new Error(message);
   }
 
   return data;

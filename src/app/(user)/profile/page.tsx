@@ -1,5 +1,3 @@
-import Navbar from "@/app/(user)/components/layout/navbar";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Users } from "lucide-react";
@@ -7,8 +5,6 @@ import { Users } from "lucide-react";
 export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-muted/40">
-      <Navbar />
-
       <div className="max-w-3xl mx-auto p-6 space-y-6">
         <h1 className="text-3xl font-bold">Profile</h1>
 
