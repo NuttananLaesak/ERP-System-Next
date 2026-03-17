@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import Navbar from "@/app/(user)/components/layout/navbar";
-
 import { Card, CardContent } from "@/components/ui/card";
 
 import {
@@ -17,13 +15,7 @@ import {
 import { getAttendanceHistory } from "@/services/user/attendance.service";
 
 import { CalendarDays } from "lucide-react";
-
-type Attendance = {
-  id: number;
-  date: string;
-  checkIn: string | null;
-  checkOut: string | null;
-};
+import { Attendance } from "@/types/attendance";
 
 export default function AttendancePage() {
   const [history, setHistory] = useState<Attendance[]>([]);
@@ -74,8 +66,6 @@ export default function AttendancePage() {
 
   return (
     <div className="min-h-screen bg-muted/40">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

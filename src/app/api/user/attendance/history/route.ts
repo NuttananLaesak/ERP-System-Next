@@ -1,14 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { getUser } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import { authGuard } from "@/lib/auth-guard";
 
-export async function GET() {
-  const user = await getUser();
-
-  if (!user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
+export const GET = authGuard(async (user) => {
   const history = await prisma.attendance.findMany({
     where: {
       userId: user.id,
@@ -19,4 +13,4 @@ export async function GET() {
   });
 
   return NextResponse.json(history);
-}
+});

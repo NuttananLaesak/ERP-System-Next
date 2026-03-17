@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import Navbar from "@/app/(user)/components/layout/navbar";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,8 +47,8 @@ import {
   createTask,
   updateTask,
   deleteTask,
-  Task,
 } from "@/services/user/tasks.service";
+import { Task } from "@/types/task";
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -218,8 +216,6 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen bg-muted/40">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

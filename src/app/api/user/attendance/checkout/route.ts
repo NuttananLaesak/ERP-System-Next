@@ -1,14 +1,8 @@
-import { getUser } from "@/lib/auth";
+import { authGuard } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function POST() {
-  const user = await getUser();
-
-  if (!user) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
+export const POST = authGuard(async (user) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -38,4 +32,4 @@ export async function POST() {
   });
 
   return NextResponse.json(updated);
-}
+});

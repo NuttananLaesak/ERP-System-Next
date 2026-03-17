@@ -20,6 +20,7 @@ model User {
     attendances Attendance[]
     leaves      Leave[]
     payrolls    Payroll[]
+    workPolicy  WorkPolicy?
 }
 
 enum Role {
@@ -74,15 +75,31 @@ enum LeaveStatus {
     REJECTED
 }
 
+model WorkPolicy {
+    id              Int      @id @default(autoincrement())
+    userId          Int      @unique
+    monthlySalary   Float
+    workHoursPerDay Float
+    workDaysPerWeek Int
+    createdAt       DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id])
+}
+
 model Payroll {
-    id        Int      @id @default(autoincrement())
-    userId    Int
-    month     String
-    salary    Float
-    bonus     Float
-    tax       Float
-    netSalary Float
-    createdAt DateTime @default(now())
+    id              Int      @id @default(autoincrement())
+    userId          Int
+    month           String
+    baseSalary      Float
+    hoursWorkPerDay Float
+    daysWorkPerWeek Int
+    workedHours     Float
+    workedDays      Int
+    salary          Float
+    bonus           Float
+    tax             Float
+    netSalary       Float
+    createdAt       DateTime @default(now())
 
     user User @relation(fields: [userId], references: [id])
 }

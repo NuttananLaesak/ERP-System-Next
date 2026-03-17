@@ -1,13 +1,14 @@
+import { authGuard } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export const GET = authGuard(async () => {
   const tasks = await prisma.task.findMany({
     orderBy: { createdAt: "desc" },
   });
 
   return NextResponse.json(tasks);
-}
+});
 
 export async function POST(req: Request) {
   const body = await req.json();

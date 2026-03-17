@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import Navbar from "@/app/(user)/components/layout/navbar";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
@@ -17,13 +15,14 @@ import {
   LogIn,
 } from "lucide-react";
 
-import { DashboardData, getDashboard } from "@/services/user/dashboard.service";
+import { getDashboard } from "@/services/user/dashboard.service";
 import { toast } from "sonner";
 import { checkIn, checkOut } from "@/services/user/attendance.service";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dashboard } from "@/types/dashboard";
 
 export default function DashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [data, setData] = useState<Dashboard | null>(null);
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -87,11 +86,26 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <div className="min-h-screen bg-muted/40">
-        <Navbar />
         <div className="max-w-7xl mx-auto p-6 space-y-8">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[...Array(4)].map((_, i) => (
+          <Card className="border shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-5 w-20" />
+            </CardHeader>
+            <CardContent className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+              <div className="space-y-3">
+                <Skeleton className="h-12 w-40" />
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-4 w-48" />
+              </div>
+              <div className="flex gap-3">
+                <Skeleton className="h-10 w-28 rounded-lg" />
+                <Skeleton className="h-10 w-28 rounded-lg" />
+              </div>
+            </CardContent>
+          </Card>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(3)].map((_, i) => (
               <Card key={i}>
                 <CardHeader className="space-y-2">
                   <Skeleton className="h-4 w-24" />
@@ -132,8 +146,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-muted/40">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto p-6 space-y-8">
         {/* Attendance */}
         <Card className="border shadow-sm ">
@@ -246,25 +258,29 @@ export default function DashboardPage() {
           </Card>
 
           {/* Payroll */}
-          <Card className="hover:shadow-lg hover:scale-105 transition-transform duration-200">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Payroll</CardTitle>
+          <Link href="/payroll">
+            <Card className="hover:shadow-lg hover:scale-105 transition-transform duration-200">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Payroll</CardTitle>
 
-              <Wallet className="h-5 w-5 text-muted-foreground" />
-            </CardHeader>
+                <Wallet className="h-5 w-5 text-muted-foreground" />
+              </CardHeader>
 
-            <CardContent className="-mt-5">
-              <p className="text-lg font-semibold text-blue-600">
-                {data.payroll ? "Latest Salary" : "No Payroll"}
-              </p>
+              <CardContent className="-mt-5">
+                <p className="text-lg font-semibold text-blue-600">
+                  {data.payroll
+                    ? `$${data.payroll.estimatedSalary.toFixed(2)} (${data.payroll.workedHours.toFixed(0)} hours)`
+                    : "No Payroll"}
+                </p>
 
-              <p className="text-xs text-muted-foreground">
-                {data.payroll
-                  ? `Net: $${data.payroll.netSalary}`
-                  : "No salary record"}
-              </p>
-            </CardContent>
-          </Card>
+                <p className="text-xs text-muted-foreground">
+                  {data.payroll
+                    ? `Base salary: $${data.payroll.baseSalary}`
+                    : "No salary policy"}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
       </div>
     </div>
