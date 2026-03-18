@@ -3,17 +3,26 @@ import { NextResponse } from "next/server";
 
 type AuthUser = NonNullable<Awaited<ReturnType<typeof getUser>>>;
 
-export function authGuard(handler: (user: AuthUser) => Promise<Response>) {
-  return async () => {
+export function authGuard<TParams = Record<string, string>>(
+  handler: (
+    user: AuthUser,
+    req: Request,
+    context: { params: TParams },
+  ) => Promise<Response>,
+) {
+  return async (
+    req: Request,
+    context: { params: Promise<TParams> },
+  ): Promise<Response> => {
     const user = await getUser();
 
     if (!user) {
-      const data = NextResponse.json(
+      const res = NextResponse.json(
         { message: "Unauthorized" },
         { status: 401 },
       );
 
-      data.cookies.set("token", "", {
+      res.cookies.set("token", "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
@@ -21,9 +30,11 @@ export function authGuard(handler: (user: AuthUser) => Promise<Response>) {
         expires: new Date(0),
       });
 
-      return data;
+      return res;
     }
 
-    return handler(user);
+    const resolvedParams = await context.params;
+
+    return handler(user, req, { params: resolvedParams });
   };
 }

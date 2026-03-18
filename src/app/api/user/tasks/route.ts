@@ -10,15 +10,15 @@ export const GET = authGuard(async () => {
   return NextResponse.json(tasks);
 });
 
-export async function POST(req: Request) {
+export const POST = authGuard(async (user, req) => {
   const body = await req.json();
 
   const task = await prisma.task.create({
     data: {
       title: body.title,
-      userId: body.userId,
+      userId: user.id,
     },
   });
 
   return NextResponse.json(task);
-}
+});

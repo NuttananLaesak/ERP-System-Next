@@ -14,6 +14,8 @@ import {
 
 import { getAttendanceHistory } from "@/services/user/attendance.service";
 
+import { motion } from "framer-motion";
+
 import { CalendarDays } from "lucide-react";
 import { Attendance } from "@/types/attendance";
 
@@ -66,8 +68,7 @@ export default function AttendancePage() {
 
   return (
     <div className="min-h-screen bg-muted/40">
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
-        {/* Header */}
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-2">
             <CalendarDays className="w-8 h-8 text-muted-foreground" />
@@ -118,7 +119,7 @@ export default function AttendancePage() {
         <Card className="shadow-sm border">
           <CardContent>
             {/* Table */}
-            <div className="overflow-x-auto -mt-4">
+            <div className="overflow-x-auto overflow-y-hidden -mt-4">
               <table className="min-w-162.5 w-full text-sm">
                 <thead>
                   <tr className="border-b text-muted-foreground">
@@ -126,21 +127,23 @@ export default function AttendancePage() {
                     <th className="text-left py-3 px-4">Check In</th>
                     <th className="text-left py-3 px-4">Check Out</th>
                     <th className="text-left py-3 px-4">Duration</th>
-                    <th className="text-left py-3 px-4">Status</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {filteredHistory.map((item) => (
-                    <tr
+                  {filteredHistory.map((item, idx) => (
+                    <motion.tr
                       key={item.id}
-                      className="border-b hover:bg-muted/40 transition"
+                      className="hover:bg-muted/40 transition-colors"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
                     >
                       <td className="py-3 px-4 font-medium">
                         {new Date(item.date).toLocaleDateString()}
                       </td>
 
-                      <td className="py-3 px-4 text-green-600">
+                      <td className="py-3 px-4">
                         {item.checkIn
                           ? new Date(item.checkIn).toLocaleTimeString([], {
                               hour: "2-digit",
@@ -149,7 +152,7 @@ export default function AttendancePage() {
                           : "-"}
                       </td>
 
-                      <td className="py-3 px-4 text-blue-600">
+                      <td className="py-3 px-4">
                         {item.checkOut
                           ? new Date(item.checkOut).toLocaleTimeString([], {
                               hour: "2-digit",
@@ -163,22 +166,7 @@ export default function AttendancePage() {
                           ? getDuration(item.checkIn, item.checkOut)
                           : "-"}
                       </td>
-
-                      <td className="py-3 px-4">
-                        <span
-                          className={`text-xs font-medium px-2 py-1 rounded
-                          ${
-                            item.checkIn && item.checkOut
-                              ? "bg-green-100 text-green-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
-                        >
-                          {item.checkIn && item.checkOut
-                            ? "Completed"
-                            : "Missing checkout"}
-                        </span>
-                      </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                   {filteredHistory.length === 0 && (
                     <tr>

@@ -5,9 +5,21 @@ CREATE TABLE `User` (
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `role` ENUM('Admin', 'Manager', 'Employee') NOT NULL DEFAULT 'Employee',
+    `positionId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `User_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Position` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `salary` DOUBLE NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `Position_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -53,8 +65,8 @@ CREATE TABLE `WorkPolicy` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `monthlySalary` DOUBLE NOT NULL,
-    `workHoursPerDay` DOUBLE NOT NULL,
-    `workDaysPerWeek` INTEGER NOT NULL,
+    `workHoursPerDay` DOUBLE NOT NULL DEFAULT 8,
+    `workDaysPerWeek` INTEGER NOT NULL DEFAULT 5,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `WorkPolicy_userId_key`(`userId`),
