@@ -15,6 +15,7 @@ model User {
     email       String       @unique
     password    String
     role        Role         @default(Employee)
+    positionId  Int
     createdAt   DateTime     @default(now())
     tasks       Task[]
     attendances Attendance[]
@@ -27,6 +28,13 @@ enum Role {
     Admin
     Manager
     Employee
+}
+
+model Position {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    salary    Float
+    createdAt DateTime @default(now())
 }
 
 model Task {
@@ -79,8 +87,8 @@ model WorkPolicy {
     id              Int      @id @default(autoincrement())
     userId          Int      @unique
     monthlySalary   Float
-    workHoursPerDay Float
-    workDaysPerWeek Int
+    workHoursPerDay Float    @default(8)
+    workDaysPerWeek Int      @default(5)
     createdAt       DateTime @default(now())
 
     user User @relation(fields: [userId], references: [id])

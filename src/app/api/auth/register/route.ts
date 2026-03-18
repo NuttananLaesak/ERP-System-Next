@@ -20,13 +20,43 @@ export async function POST(req: Request) {
     );
   }
 
+  if (data.positionId === undefined) {
+    return NextResponse.json(
+      { message: "Position is required" },
+      { status: 400 },
+    );
+  }
+
+  const position = await prisma.position.findUnique({
+    where: { id: data.positionId },
+  });
+
+  if (!position) {
+    return NextResponse.json(
+      { message: "Position not found" },
+      { status: 400 },
+    );
+  }
+
   const user = await prisma.user.create({
     data: {
       name: data.name,
       email: data.email,
       password: await bcrypt.hash(data.password, 10),
+      positionId: data.positionId,
+      workPolicy: {
+        create: {
+          monthlySalary: position.salary,
+        },
+      },
     },
   });
 
-  return NextResponse.json({ id: user.id, name: user.name, email: user.email });
+  return NextResponse.json({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    position: position.name,
+    monthlySalary: position.salary,
+  });
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { Controller, FieldErrors, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +10,13 @@ import { registerSchema, RegisterInput } from "@/schemas/auth.schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Card,
   CardHeader,
   CardTitle,
@@ -17,19 +24,38 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, Briefcase } from "lucide-react";
 
 import { toast } from "sonner";
 import Link from "next/link";
 import { register } from "@/services/auth.service";
+import { getPosition } from "@/services/position.service";
+import { Position } from "@/types/position";
+import { handleFormValidateErrors } from "@/utils/handleFormValidateErrors";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [positions, setPositions] = useState<Position[]>([]);
+
+  useEffect(() => {
+    getPosition()
+      .then(setPositions)
+      .catch(() => toast.error("Failed to load positions"));
+  }, []);
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
   });
+
+  const validateError = (errors: FieldErrors<RegisterInput>) => {
+    handleFormValidateErrors(errors, [
+      "name",
+      "email",
+      "password",
+      "positionId",
+    ]);
+  };
 
   const onSubmit = async (data: RegisterInput) => {
     const promise = register(data);
@@ -60,7 +86,10 @@ export default function RegisterPage() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, validateError)}
+            className="space-y-4"
+          >
             {/* Name */}
             <div className="relative">
               <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -102,6 +131,31 @@ export default function RegisterPage() {
               >
                 {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
+            </div>
+
+            <div className="relative">
+              <Briefcase className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Controller
+                control={form.control}
+                name="positionId"
+                render={({ field }) => (
+                  <Select
+                    value={field.value?.toString() || ""}
+                    onValueChange={(val) => field.onChange(Number(val))}
+                  >
+                    <SelectTrigger className="w-full pl-10 text-foreground">
+                      <SelectValue placeholder="Select Position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {positions.map((pos) => (
+                        <SelectItem key={pos.id} value={pos.id.toString()}>
+                          {pos.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
 
             <Button type="submit" className="w-full active:scale-95">

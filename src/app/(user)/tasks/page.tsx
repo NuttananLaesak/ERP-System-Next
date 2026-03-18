@@ -110,9 +110,15 @@ export default function TasksPage() {
   // ---------------- DELETE ----------------
 
   const handleDelete = async (id: number) => {
-    await deleteTask(id);
-    toast.success("Task deleted");
-    loadTasks();
+    const promise = deleteTask(id);
+    toast.promise(promise, {
+      loading: "Deleting task...",
+      success: () => {
+        loadTasks();
+        return "Task deleted successfully";
+      },
+      error: (err) => err.message || "Delete failed",
+    });
   };
 
   // ---------------- STATS ----------------
@@ -216,7 +222,7 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen bg-muted/40">
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ClipboardListIcon className="w-8 h-8 text-muted-foreground" />
@@ -305,7 +311,11 @@ export default function TasksPage() {
           </CardHeader>
 
           <CardContent className="space-y-3">
-            {todayTasks.length ? renderTasks(todayTasks) : "No tasks today"}
+            {todayTasks.length ? (
+              renderTasks(todayTasks)
+            ) : (
+              <p className="text-sm text-muted-foreground">No tasks today</p>
+            )}
           </CardContent>
         </Card>
 
@@ -316,7 +326,11 @@ export default function TasksPage() {
           </CardHeader>
 
           <CardContent className="space-y-3">
-            {earlierTasks.length ? renderTasks(earlierTasks) : "No older tasks"}
+            {earlierTasks.length ? (
+              renderTasks(earlierTasks)
+            ) : (
+              <p className="text-sm text-muted-foreground">No older tasks</p>
+            )}
           </CardContent>
         </Card>
       </div>
