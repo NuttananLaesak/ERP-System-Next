@@ -45,7 +45,7 @@ export default function RegisterPage() {
   }, []);
 
   const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema) as any,
   });
 
   const validateError = (errors: FieldErrors<RegisterInput>) => {
